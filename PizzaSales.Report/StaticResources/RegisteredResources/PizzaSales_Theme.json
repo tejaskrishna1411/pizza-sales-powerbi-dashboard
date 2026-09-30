@@ -1,0 +1,33 @@
+{
+  "name": "Pizza Sales - Navy & Tomato",
+  "dataColors": ["#0B2545", "#E4572E", "#13315C", "#8DA9C4", "#F2A541", "#5C7A99", "#B8C4D6", "#3A506B"],
+  "background": "#FFFFFF",
+  "foreground": "#0B2545",
+  "tableAccent": "#E4572E",
+  "good": "#2E8B57",
+  "neutral": "#F2A541",
+  "bad": "#C0392B",
+  "maximum": "#E4572E",
+  "center": "#F2A541",
+  "minimum": "#EEF2F7",
+  "textClasses": {
+    "callout": { "fontSize": 28, "fontFace": "Segoe UI Semibold", "color": "#0B2545" },
+    "title": { "fontSize": 14, "fontFace": "Segoe UI Semibold", "color": "#0B2545" },
+    "header": { "fontSize": 12, "fontFace": "Segoe UI Semibold", "color": "#0B2545" },
+    "label": { "fontSize": 10, "fontFace": "Segoe UI", "color": "#3A506B" }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "title": [{ "show": true, "fontColor": { "solid": { "color": "#0B2545" } }, "fontSize": 12, "fontFamily": "Segoe UI Semibold" }],
+        "background": [{ "show": true, "color": { "solid": { "color": "#FFFFFF" } }, "transparency": 0 }],
+        "border": [{ "show": true, "color": { "solid": { "color": "#E1E6EE" } }, "radius": 6 }]
+      }
+    },
+    "page": {
+      "*": {
+        "background": [{ "color": { "solid": { "color": "#F3F4F6" } }, "transparency": 0 }]
+      }
+    }
+  }
+}

@@ -1,0 +1,765 @@
+{
+  "name": "PizzaSales",
+  "compatibilityLevel": 1600,
+  "model": {
+    "culture": "en-US",
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
+    "discourageImplicitMeasures": true,
+    "sourceQueryCulture": "en-IN",
+    "tables": [
+      {
+        "name": "FactPizzaSales",
+        "lineageTag": "0d48cb57-81e3-4ea4-bd62-bfad62a74e9b",
+        "columns": [
+          {
+            "name": "pizza_id",
+            "dataType": "int64",
+            "sourceColumn": "pizza_id",
+            "isHidden": true,
+            "summarizeBy": "none",
+            "lineageTag": "1ecf9550-ad9d-41be-8501-2d32fb85e029"
+          },
+          {
+            "name": "order_id",
+            "dataType": "int64",
+            "sourceColumn": "order_id",
+            "isHidden": true,
+            "summarizeBy": "none",
+            "lineageTag": "15901412-ffb6-412d-bad6-065449382826"
+          },
+          {
+            "name": "pizza_name_id",
+            "dataType": "string",
+            "sourceColumn": "pizza_name_id",
+            "isHidden": true,
+            "summarizeBy": "none",
+            "lineageTag": "3a97e33e-061c-4bc7-96f4-acc2c375230d"
+          },
+          {
+            "name": "quantity",
+            "dataType": "int64",
+            "sourceColumn": "quantity",
+            "summarizeBy": "none",
+            "lineageTag": "24c9cd54-c61e-4845-b39d-f56b070cfc85"
+          },
+          {
+            "name": "order_date",
+            "dataType": "dateTime",
+            "sourceColumn": "order_date",
+            "isHidden": true,
+            "formatString": "dd-mmm-yyyy",
+            "summarizeBy": "none",
+            "lineageTag": "c381418e-00d0-4d18-8977-a9e9deb6c75b"
+          },
+          {
+            "name": "order_time",
+            "dataType": "dateTime",
+            "sourceColumn": "order_time",
+            "formatString": "hh:mm:ss AM/PM",
+            "summarizeBy": "none",
+            "lineageTag": "1cb1117c-14ec-44ac-9b3a-d0389e9063b7"
+          },
+          {
+            "name": "unit_price",
+            "dataType": "double",
+            "sourceColumn": "unit_price",
+            "formatString": "$#,##0.00",
+            "summarizeBy": "none",
+            "lineageTag": "dad2b747-119c-44a5-8d12-58abe739cf2f"
+          },
+          {
+            "name": "total_price",
+            "dataType": "double",
+            "sourceColumn": "total_price",
+            "formatString": "$#,##0.00",
+            "summarizeBy": "none",
+            "lineageTag": "ca1c91a4-2696-44be-b22e-09533cd2e0b0"
+          },
+          {
+            "name": "pizza_size",
+            "dataType": "string",
+            "sourceColumn": "pizza_size",
+            "isHidden": true,
+            "summarizeBy": "none",
+            "lineageTag": "5f256098-9df0-4c50-96b3-1e1299ef8fa6"
+          },
+          {
+            "name": "pizza_category",
+            "dataType": "string",
+            "sourceColumn": "pizza_category",
+            "isHidden": true,
+            "summarizeBy": "none",
+            "lineageTag": "733bb247-e294-4c5b-b47c-d957fd109489"
+          },
+          {
+            "name": "pizza_name",
+            "dataType": "string",
+            "sourceColumn": "pizza_name",
+            "isHidden": true,
+            "summarizeBy": "none",
+            "lineageTag": "00f14cd9-db64-463b-82e8-ea6514c07671"
+          },
+          {
+            "name": "Order Hour",
+            "dataType": "int64",
+            "type": "calculated",
+            "expression": "HOUR ( FactPizzaSales[order_time] )",
+            "formatString": "0",
+            "summarizeBy": "none",
+            "lineageTag": "0be5d685-6274-43e5-8dcb-f0b0b51a8b96"
+          },
+          {
+            "name": "Meal Period Sort",
+            "dataType": "int64",
+            "type": "calculated",
+            "expression": "SWITCH ( TRUE (), FactPizzaSales[Order Hour] < 11, 1, FactPizzaSales[Order Hour] < 14, 2, FactPizzaSales[Order Hour] < 17, 3, 4 )",
+            "isHidden": true,
+            "summarizeBy": "none",
+            "lineageTag": "c08a8f42-1a2c-4f12-8c72-a79b377e2ae7"
+          },
+          {
+            "name": "Meal Period",
+            "dataType": "string",
+            "type": "calculated",
+            "expression": "SWITCH ( TRUE (), FactPizzaSales[Order Hour] < 11, \"Morning\", FactPizzaSales[Order Hour] < 14, \"Lunch\", FactPizzaSales[Order Hour] < 17, \"Afternoon\", \"Evening\" )",
+            "sortByColumn": "Meal Period Sort",
+            "summarizeBy": "none",
+            "lineageTag": "b6a6225f-6364-4f85-a9a4-1e79a3e7797a"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "FactPizzaSales",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = stg_pizza_sales,\n    FactColumns = Table.RemoveColumns(Source, {\"pizza_ingredients\"})\nin\n    FactColumns"
+            }
+          }
+        ]
+      },
+      {
+        "name": "DimDate",
+        "lineageTag": "fadd10c6-2981-42e5-95a6-f725a3917371",
+        "columns": [
+          {
+            "name": "Date",
+            "dataType": "dateTime",
+            "type": "calculatedTableColumn",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[Date]",
+            "isKey": true,
+            "formatString": "dd-mmm-yyyy",
+            "summarizeBy": "none",
+            "lineageTag": "42e5fa70-5685-4c08-aeee-e99c7ea2140c"
+          },
+          {
+            "name": "Year",
+            "dataType": "int64",
+            "type": "calculatedTableColumn",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[Year]",
+            "summarizeBy": "none",
+            "lineageTag": "6496d746-b0d5-4407-ad6b-c30a6e792bea"
+          },
+          {
+            "name": "Month Number",
+            "dataType": "int64",
+            "type": "calculatedTableColumn",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[Month Number]",
+            "isHidden": true,
+            "summarizeBy": "none",
+            "lineageTag": "6d940320-4092-4346-a43a-c9cbe4aff7be"
+          },
+          {
+            "name": "Month Name",
+            "dataType": "string",
+            "type": "calculatedTableColumn",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[Month Name]",
+            "sortByColumn": "Month Number",
+            "summarizeBy": "none",
+            "lineageTag": "21dd1174-a387-4f10-b25b-e739fd1fc714"
+          },
+          {
+            "name": "Quarter",
+            "dataType": "string",
+            "type": "calculatedTableColumn",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[Quarter]",
+            "summarizeBy": "none",
+            "lineageTag": "6e0f6cfd-6809-4a81-bc43-8763f77286af"
+          },
+          {
+            "name": "Year-Month",
+            "dataType": "string",
+            "type": "calculatedTableColumn",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[Year-Month]",
+            "summarizeBy": "none",
+            "lineageTag": "db796e19-a801-4b23-bf91-0c03e2540989"
+          },
+          {
+            "name": "Day",
+            "dataType": "int64",
+            "type": "calculatedTableColumn",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[Day]",
+            "summarizeBy": "none",
+            "lineageTag": "a9bc8e23-628f-4fa2-b355-ed60794ceca6"
+          },
+          {
+            "name": "Day Name",
+            "dataType": "string",
+            "type": "calculatedTableColumn",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[Day Name]",
+            "sortByColumn": "Day of Week Number",
+            "summarizeBy": "none",
+            "lineageTag": "40738e1b-f67a-48da-9c92-6a286f1820d4"
+          },
+          {
+            "name": "Day of Week Number",
+            "dataType": "int64",
+            "type": "calculatedTableColumn",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[Day of Week Number]",
+            "isHidden": true,
+            "summarizeBy": "none",
+            "lineageTag": "79649114-0475-40a2-acd5-2f835882aab1"
+          },
+          {
+            "name": "Week Number",
+            "dataType": "int64",
+            "type": "calculatedTableColumn",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[Week Number]",
+            "summarizeBy": "none",
+            "lineageTag": "6a6c744f-e9b2-494c-a3dd-4c165a70daab"
+          },
+          {
+            "name": "Day Type",
+            "dataType": "string",
+            "type": "calculatedTableColumn",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[Day Type]",
+            "summarizeBy": "none",
+            "lineageTag": "b1fb796c-3177-44fe-bbc3-f35b37b9b5a6"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "DimDate",
+            "mode": "import",
+            "source": {
+              "type": "calculated",
+              "expression": "VAR MinYear = YEAR ( MIN ( FactPizzaSales[order_date] ) )\nVAR MaxYear = YEAR ( MAX ( FactPizzaSales[order_date] ) )\nRETURN\nADDCOLUMNS (\n    CALENDAR ( DATE ( MinYear, 1, 1 ), DATE ( MaxYear, 12, 31 ) ),\n    \"Year\", YEAR ( [Date] ),\n    \"Month Number\", MONTH ( [Date] ),\n    \"Month Name\", FORMAT ( [Date], \"MMMM\" ),\n    \"Quarter\", \"Q\" & QUARTER ( [Date] ),\n    \"Year-Month\", FORMAT ( [Date], \"YYYY-MM\" ),\n    \"Day\", DAY ( [Date] ),\n    \"Day Name\", FORMAT ( [Date], \"dddd\" ),\n    \"Day of Week Number\", WEEKDAY ( [Date], 2 ),\n    \"Week Number\", WEEKNUM ( [Date], 2 ),\n    \"Day Type\", IF ( WEEKDAY ( [Date], 2 ) >= 6, \"Weekend\", \"Weekday\" )\n)"
+            }
+          }
+        ],
+        "dataCategory": "Time"
+      },
+      {
+        "name": "DimPizza",
+        "lineageTag": "a7ebffe3-1ebf-423f-939a-78e79dc74a11",
+        "columns": [
+          {
+            "name": "pizza_name_id",
+            "dataType": "string",
+            "sourceColumn": "pizza_name_id",
+            "summarizeBy": "none",
+            "lineageTag": "36c4c511-6c5e-4d1d-b118-52ac681cc4c5"
+          },
+          {
+            "name": "pizza_name",
+            "dataType": "string",
+            "sourceColumn": "pizza_name",
+            "summarizeBy": "none",
+            "lineageTag": "63bd0dec-4271-449f-9a5d-b2b4df270011"
+          },
+          {
+            "name": "pizza_category",
+            "dataType": "string",
+            "sourceColumn": "pizza_category",
+            "isHidden": true,
+            "summarizeBy": "none",
+            "lineageTag": "57377a5f-67a6-4d02-bb6e-39aa09097488"
+          },
+          {
+            "name": "pizza_ingredients",
+            "dataType": "string",
+            "sourceColumn": "pizza_ingredients",
+            "summarizeBy": "none",
+            "lineageTag": "f3b4d8ab-b887-475e-97c8-69754e979da5"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "DimPizza",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = stg_pizza_sales,\n    PizzaCols = Table.SelectColumns(Source, {\"pizza_name_id\", \"pizza_name\", \"pizza_category\", \"pizza_ingredients\"}),\n    DistinctPizza = Table.Distinct(PizzaCols, {\"pizza_name_id\"}),\n    Sorted = Table.Sort(DistinctPizza, {{\"pizza_name_id\", Order.Ascending}})\nin\n    Sorted"
+            }
+          }
+        ]
+      },
+      {
+        "name": "DimSize",
+        "lineageTag": "5cd52dcb-1782-4dee-9177-4384d52d8d45",
+        "columns": [
+          {
+            "name": "pizza_size",
+            "dataType": "string",
+            "sourceColumn": "pizza_size",
+            "sortByColumn": "size_sort",
+            "summarizeBy": "none",
+            "lineageTag": "c49e3706-78fe-46e2-add1-55487d9630ca"
+          },
+          {
+            "name": "size_sort",
+            "dataType": "int64",
+            "sourceColumn": "size_sort",
+            "isHidden": true,
+            "summarizeBy": "none",
+            "lineageTag": "00aefd95-bade-4358-8c63-22a7c9a22ea5"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "DimSize",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = stg_pizza_sales,\n    SizeOnly = Table.SelectColumns(Source, {\"pizza_size\"}),\n    DistinctSize = Table.Distinct(SizeOnly),\n    AddSortKey = Table.AddColumn(DistinctSize, \"size_sort\", each if [pizza_size] = \"S\" then 1 else if [pizza_size] = \"M\" then 2 else if [pizza_size] = \"L\" then 3 else if [pizza_size] = \"XL\" then 4 else if [pizza_size] = \"XXL\" then 5 else 99, Int64.Type),\n    Sorted = Table.Sort(AddSortKey, {{\"size_sort\", Order.Ascending}})\nin\n    Sorted"
+            }
+          }
+        ]
+      },
+      {
+        "name": "DimCategory",
+        "lineageTag": "bf42959d-c727-447c-a155-f9f272e81d2e",
+        "columns": [
+          {
+            "name": "pizza_category",
+            "dataType": "string",
+            "sourceColumn": "pizza_category",
+            "summarizeBy": "none",
+            "lineageTag": "9236ebe3-dde0-4e34-8d79-fadf4e0ad45c"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "DimCategory",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = stg_pizza_sales,\n    CategoryOnly = Table.SelectColumns(Source, {\"pizza_category\"}),\n    DistinctCategory = Table.Distinct(CategoryOnly),\n    Sorted = Table.Sort(DistinctCategory, {{\"pizza_category\", Order.Ascending}})\nin\n    Sorted"
+            }
+          }
+        ]
+      },
+      {
+        "name": "_Measures",
+        "lineageTag": "53d676d7-c436-463a-9be8-c9e31df7ce47",
+        "columns": [
+          {
+            "name": "Placeholder",
+            "dataType": "int64",
+            "type": "calculatedTableColumn",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[Placeholder]",
+            "isHidden": true,
+            "summarizeBy": "none",
+            "lineageTag": "930f5b8f-6176-498e-83d6-08cfebad439d"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "_Measures",
+            "mode": "import",
+            "source": {
+              "type": "calculated",
+              "expression": "DATATABLE ( \"Placeholder\", INTEGER, { { 1 } } )"
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Total Revenue",
+            "expression": "SUM ( FactPizzaSales[total_price] )",
+            "displayFolder": "1 Sales KPIs",
+            "lineageTag": "a261fdff-2905-4443-9754-95ea5ed47c64",
+            "formatString": "$#,##0",
+            "description": "Sum of total_price."
+          },
+          {
+            "name": "Total Orders",
+            "expression": "DISTINCTCOUNT ( FactPizzaSales[order_id] )",
+            "displayFolder": "1 Sales KPIs",
+            "lineageTag": "d864659d-612f-4f8b-9f56-5308ea7f359d",
+            "formatString": "#,##0",
+            "description": "Distinct count of order_id."
+          },
+          {
+            "name": "Total Pizzas Sold",
+            "expression": "SUM ( FactPizzaSales[quantity] )",
+            "displayFolder": "1 Sales KPIs",
+            "lineageTag": "4b8878fd-36c2-4a42-8e6b-c3fdf0b4c2e0",
+            "formatString": "#,##0",
+            "description": "Sum of quantity."
+          },
+          {
+            "name": "Average Order Value",
+            "expression": "DIVIDE ( [Total Revenue], [Total Orders] )",
+            "displayFolder": "1 Sales KPIs",
+            "lineageTag": "2b1b5b83-fdbd-4ec0-958a-0b768475fb8b",
+            "formatString": "$#,##0.00",
+            "description": "Total Revenue / Total Orders."
+          },
+          {
+            "name": "Average Pizza Price",
+            "expression": "AVERAGE ( FactPizzaSales[unit_price] )",
+            "displayFolder": "1 Sales KPIs",
+            "lineageTag": "f86690ce-99fc-4317-927b-b153956f84da",
+            "formatString": "$#,##0.00",
+            "description": "Average unit price of lines sold."
+          },
+          {
+            "name": "Average Pizzas Per Order",
+            "expression": "DIVIDE ( [Total Pizzas Sold], [Total Orders] )",
+            "displayFolder": "1 Sales KPIs",
+            "lineageTag": "35be6956-d923-4a7a-bf9a-7809287795e5",
+            "formatString": "0.00",
+            "description": "Total Pizzas Sold / Total Orders."
+          },
+          {
+            "name": "Revenue Per Pizza",
+            "expression": "DIVIDE ( [Total Revenue], [Total Pizzas Sold] )",
+            "displayFolder": "1 Sales KPIs",
+            "lineageTag": "5b0eebae-6f50-4260-8626-524d4316b900",
+            "formatString": "$#,##0.00",
+            "description": "Realised revenue per pizza."
+          },
+          {
+            "name": "Revenue Previous Month",
+            "expression": "CALCULATE ( [Total Revenue], DATEADD ( DimDate[Date], -1, MONTH ) )",
+            "displayFolder": "2 Time Intelligence",
+            "lineageTag": "3959bf9f-1ec9-4600-9dc2-eef15cef3bf7",
+            "formatString": "$#,##0"
+          },
+          {
+            "name": "Revenue Previous Year",
+            "expression": "CALCULATE ( [Total Revenue], SAMEPERIODLASTYEAR ( DimDate[Date] ) )",
+            "displayFolder": "2 Time Intelligence",
+            "lineageTag": "0a552da5-b4af-495f-a035-b6d08fe97674",
+            "formatString": "$#,##0",
+            "description": "Blank here: data covers one year (2015)."
+          },
+          {
+            "name": "Revenue Growth %",
+            "expression": "VAR CurrentRevenue = [Total Revenue]\nVAR PreviousRevenue = [Revenue Previous Month]\nRETURN\n    IF ( NOT ISBLANK ( PreviousRevenue ), DIVIDE ( CurrentRevenue - PreviousRevenue, PreviousRevenue ) )",
+            "displayFolder": "2 Time Intelligence",
+            "lineageTag": "35aee45c-3c50-4654-bd3c-d98771b6fb8e",
+            "formatString": "0.0%",
+            "description": "Month-over-month growth."
+          },
+          {
+            "name": "Revenue YoY Growth %",
+            "expression": "VAR CurrentRevenue = [Total Revenue]\nVAR PreviousRevenue = [Revenue Previous Year]\nRETURN\n    IF ( NOT ISBLANK ( PreviousRevenue ), DIVIDE ( CurrentRevenue - PreviousRevenue, PreviousRevenue ) )",
+            "displayFolder": "2 Time Intelligence",
+            "lineageTag": "6dfed478-966d-4ae7-b114-23051c2d4e90",
+            "formatString": "0.0%",
+            "description": "Blank until 2+ years of data."
+          },
+          {
+            "name": "Monthly Revenue",
+            "expression": "CALCULATE ( [Total Revenue], ALLEXCEPT ( DimDate, DimDate[Year], DimDate[Quarter], DimDate[Month Number], DimDate[Month Name], DimDate[Year-Month] ) )",
+            "displayFolder": "2 Time Intelligence",
+            "lineageTag": "0bbab977-62ab-42fb-82dc-d36c32574cb2",
+            "formatString": "$#,##0",
+            "description": "Whole-month revenue ignoring day filters."
+          },
+          {
+            "name": "Yearly Revenue",
+            "expression": "CALCULATE ( [Total Revenue], ALLEXCEPT ( DimDate, DimDate[Year] ) )",
+            "displayFolder": "2 Time Intelligence",
+            "lineageTag": "d554a17d-cdbd-4bd3-ab00-636ecf736995",
+            "formatString": "$#,##0",
+            "description": "Whole-year revenue."
+          },
+          {
+            "name": "Cumulative Revenue",
+            "expression": "VAR LastDateInContext = MAX ( DimDate[Date] )\nRETURN\n    CALCULATE ( [Total Revenue], FILTER ( ALLSELECTED ( DimDate[Date] ), DimDate[Date] <= LastDateInContext ) )",
+            "displayFolder": "2 Time Intelligence",
+            "lineageTag": "e729c0cf-467a-4534-975d-9d851eba376d",
+            "formatString": "$#,##0",
+            "description": "Running total over the selected range."
+          },
+          {
+            "name": "YTD Revenue",
+            "expression": "TOTALYTD ( [Total Revenue], DimDate[Date] )",
+            "displayFolder": "2 Time Intelligence",
+            "lineageTag": "575cb3e2-054e-4218-8116-2b45b44be9c5",
+            "formatString": "$#,##0"
+          },
+          {
+            "name": "MTD Revenue",
+            "expression": "TOTALMTD ( [Total Revenue], DimDate[Date] )",
+            "displayFolder": "2 Time Intelligence",
+            "lineageTag": "62cc1c15-0107-4549-9ac1-29dd79b14a9b",
+            "formatString": "$#,##0"
+          },
+          {
+            "name": "Best Selling Pizza",
+            "expression": "VAR X = FILTER ( ADDCOLUMNS ( VALUES ( DimPizza[pizza_name] ), \"@V\", [Total Pizzas Sold] ), NOT ISBLANK ( [@V] ) )\nRETURN\n    CONCATENATEX ( TOPN ( 1, X, [@V], DESC ), DimPizza[pizza_name], \", \" )",
+            "displayFolder": "3 Product Analytics",
+            "lineageTag": "7a84de12-7574-4ded-b804-3afe5d094c07",
+            "description": "Highest quantity sold."
+          },
+          {
+            "name": "Worst Selling Pizza",
+            "expression": "VAR X = FILTER ( ADDCOLUMNS ( VALUES ( DimPizza[pizza_name] ), \"@V\", [Total Pizzas Sold] ), NOT ISBLANK ( [@V] ) )\nRETURN\n    CONCATENATEX ( TOPN ( 1, X, [@V], ASC ), DimPizza[pizza_name], \", \" )",
+            "displayFolder": "3 Product Analytics",
+            "lineageTag": "ce58fa80-cb89-4aac-b28a-078ec2e44978",
+            "description": "Lowest quantity sold."
+          },
+          {
+            "name": "Top Pizza by Revenue",
+            "expression": "VAR X = FILTER ( ADDCOLUMNS ( VALUES ( DimPizza[pizza_name] ), \"@V\", [Total Revenue] ), NOT ISBLANK ( [@V] ) )\nRETURN\n    CONCATENATEX ( TOPN ( 1, X, [@V], DESC ), DimPizza[pizza_name], \", \" )",
+            "displayFolder": "3 Product Analytics",
+            "lineageTag": "97de24b8-d96f-47c5-aa95-e49551c7dd1f"
+          },
+          {
+            "name": "Best Pizza Category",
+            "expression": "VAR X = FILTER ( ADDCOLUMNS ( VALUES ( DimCategory[pizza_category] ), \"@V\", [Total Revenue] ), NOT ISBLANK ( [@V] ) )\nRETURN\n    CONCATENATEX ( TOPN ( 1, X, [@V], DESC ), DimCategory[pizza_category], \", \" )",
+            "displayFolder": "3 Product Analytics",
+            "lineageTag": "e922bb48-7cf7-40ae-8a1c-9089f5f51f95",
+            "description": "Category with the highest revenue."
+          },
+          {
+            "name": "Average Items Per Order",
+            "expression": "DIVIDE ( COUNTROWS ( FactPizzaSales ), [Total Orders] )",
+            "displayFolder": "4 Order Analytics",
+            "lineageTag": "de7d72c2-3869-43e4-8ed4-70b7a1421549",
+            "formatString": "0.00",
+            "description": "Line items per order."
+          },
+          {
+            "name": "Orders Per Day",
+            "expression": "DIVIDE ( [Total Orders], DISTINCTCOUNT ( FactPizzaSales[order_date] ) )",
+            "displayFolder": "4 Order Analytics",
+            "lineageTag": "e5800f7e-fa6a-4229-8007-c364d20cdf5e",
+            "formatString": "#,##0.0",
+            "description": "Orders per trading day."
+          },
+          {
+            "name": "Revenue Per Order",
+            "expression": "[Average Order Value]",
+            "displayFolder": "4 Order Analytics",
+            "lineageTag": "355bf18d-b62c-4757-9e48-9cd0a228a8ae",
+            "formatString": "$#,##0.00"
+          },
+          {
+            "name": "Peak Order Hour",
+            "expression": "VAR HourOrders = ADDCOLUMNS ( VALUES ( FactPizzaSales[Order Hour] ), \"@Orders\", [Total Orders] )\nRETURN\n    MAXX ( TOPN ( 1, HourOrders, [@Orders], DESC ), FactPizzaSales[Order Hour] )",
+            "displayFolder": "4 Order Analytics",
+            "lineageTag": "8f43b221-0039-4624-8eef-2bf21b11ca73",
+            "formatString": "00\":00\"",
+            "description": "Hour with the most orders."
+          },
+          {
+            "name": "Peak Order Day",
+            "expression": "VAR DayOrders = ADDCOLUMNS ( VALUES ( DimDate[Day Name] ), \"@Orders\", [Total Orders] )\nRETURN\n    CONCATENATEX ( TOPN ( 1, DayOrders, [@Orders], DESC ), DimDate[Day Name], \", \" )",
+            "displayFolder": "4 Order Analytics",
+            "lineageTag": "1f81795a-66a5-440e-b457-38dd93bb65c0",
+            "description": "Weekday with the most orders."
+          },
+          {
+            "name": "Revenue Contribution %",
+            "expression": "DIVIDE ( [Total Revenue], CALCULATE ( [Total Revenue], ALLSELECTED () ) )",
+            "displayFolder": "5 Contribution",
+            "lineageTag": "6f5f88b5-7d9c-4c40-8fba-a0dba2e38738",
+            "formatString": "0.0%",
+            "description": "Share of revenue in the current selection."
+          },
+          {
+            "name": "Pizza Quantity Contribution %",
+            "expression": "DIVIDE ( [Total Pizzas Sold], CALCULATE ( [Total Pizzas Sold], ALLSELECTED () ) )",
+            "displayFolder": "5 Contribution",
+            "lineageTag": "12333704-34ee-4075-9375-c8bbad7353df",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Category Contribution %",
+            "expression": "DIVIDE ( [Total Revenue], CALCULATE ( [Total Revenue], ALLSELECTED ( DimCategory ) ) )",
+            "displayFolder": "5 Contribution",
+            "lineageTag": "2949bacc-b7ad-42fd-a16c-ea9ed829630f",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Top 10 Pizzas Revenue %",
+            "expression": "VAR Top10 = TOPN ( 10, ALLSELECTED ( DimPizza[pizza_name] ), [Total Revenue], DESC )\nVAR Top10Revenue = SUMX ( Top10, [Total Revenue] )\nRETURN\n    DIVIDE ( Top10Revenue, CALCULATE ( [Total Revenue], ALLSELECTED () ) )",
+            "displayFolder": "5 Contribution",
+            "lineageTag": "14b7b2df-8699-4228-b9ef-e04047fae0d0",
+            "formatString": "0.0%",
+            "description": "Revenue share of the top 10 pizzas."
+          },
+          {
+            "name": "TopN Value",
+            "expression": "SELECTEDVALUE ( 'TopN Selector'[Value], 10 )",
+            "displayFolder": "6 Ranking",
+            "lineageTag": "7b9e1326-7044-4c12-b079-5f3387abbde0",
+            "formatString": "0",
+            "description": "Number chosen in the Top N slicer (default 10)."
+          },
+          {
+            "name": "Pizza Rank by Revenue",
+            "expression": "RANKX ( ALLSELECTED ( DimPizza[pizza_name] ), [Total Revenue], , DESC, DENSE )",
+            "displayFolder": "6 Ranking",
+            "lineageTag": "913e19f5-476d-4688-a9ec-d33754569741",
+            "formatString": "0"
+          },
+          {
+            "name": "Pizza Rank by Quantity",
+            "expression": "RANKX ( ALLSELECTED ( DimPizza[pizza_name] ), [Total Pizzas Sold], , DESC, DENSE )",
+            "displayFolder": "6 Ranking",
+            "lineageTag": "55efe115-7946-446c-b6c9-1634797d62f0",
+            "formatString": "0"
+          },
+          {
+            "name": "Show In Top N",
+            "expression": "IF ( [Pizza Rank by Revenue] <= [TopN Value], 1, 0 )",
+            "displayFolder": "6 Ranking",
+            "lineageTag": "edbb3c93-2d9c-45a0-bda6-3607303ca73d",
+            "formatString": "0",
+            "description": "Visual filter flag (=1): Top N by revenue."
+          },
+          {
+            "name": "Show In Top N (Qty)",
+            "expression": "IF ( [Pizza Rank by Quantity] <= [TopN Value], 1, 0 )",
+            "displayFolder": "6 Ranking",
+            "lineageTag": "ee6841e5-d03b-4f99-a346-95d2125b23e3",
+            "formatString": "0",
+            "description": "Visual filter flag (=1): Top N by quantity."
+          },
+          {
+            "name": "Show In Bottom N",
+            "expression": "VAR TotalPizzas = COUNTROWS ( ALLSELECTED ( DimPizza[pizza_name] ) )\nRETURN IF ( [Pizza Rank by Revenue] > TotalPizzas - [TopN Value], 1, 0 )",
+            "displayFolder": "6 Ranking",
+            "lineageTag": "7a6746a7-d504-4e62-9e94-e55eb37808dd",
+            "formatString": "0",
+            "description": "Visual filter flag (=1): Bottom N by revenue."
+          },
+          {
+            "name": "DQ Row Count",
+            "expression": "COUNTROWS ( FactPizzaSales )",
+            "displayFolder": "7 Data Quality",
+            "lineageTag": "c4a865c2-0482-4636-a5ea-1a2c0da1175c",
+            "formatString": "#,##0"
+          },
+          {
+            "name": "DQ Price Mismatch Rows",
+            "expression": "COALESCE ( COUNTROWS ( FILTER ( FactPizzaSales, ABS ( FactPizzaSales[quantity] * FactPizzaSales[unit_price] - FactPizzaSales[total_price] ) > 0.01 ) ), 0 )",
+            "displayFolder": "7 Data Quality",
+            "lineageTag": "832cc78f-c39a-4d3d-af53-d24b52cb10f9",
+            "formatString": "#,##0",
+            "description": "Rows where quantity x unit_price differs from total_price."
+          },
+          {
+            "name": "DQ Invalid Qty or Price Rows",
+            "expression": "COALESCE ( COUNTROWS ( FILTER ( FactPizzaSales, FactPizzaSales[quantity] <= 0 || FactPizzaSales[unit_price] <= 0 || FactPizzaSales[total_price] <= 0 ) ), 0 )",
+            "displayFolder": "7 Data Quality",
+            "lineageTag": "294034e0-00eb-426d-91f4-2bd1b0c86c6c",
+            "formatString": "#,##0"
+          },
+          {
+            "name": "DQ Duplicate Pizza IDs",
+            "expression": "COUNTROWS ( FactPizzaSales ) - DISTINCTCOUNT ( FactPizzaSales[pizza_id] )",
+            "displayFolder": "7 Data Quality",
+            "lineageTag": "17c82bfd-ef00-44fa-a0c7-bcdbf6ed3fed",
+            "formatString": "#,##0"
+          }
+        ]
+      },
+      {
+        "name": "TopN Selector",
+        "lineageTag": "27b1dc09-169b-4c2d-871a-2f5e5779582f",
+        "columns": [
+          {
+            "name": "Value",
+            "dataType": "int64",
+            "type": "calculatedTableColumn",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[Value]",
+            "summarizeBy": "none",
+            "lineageTag": "bdead89e-952e-42ac-81fd-5e4b08c0a1b4"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "TopN Selector",
+            "mode": "import",
+            "source": {
+              "type": "calculated",
+              "expression": "GENERATESERIES ( 3, 20, 1 )"
+            }
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "7c5cde16-5b77-43cd-977f-4bd16f67d7a1",
+        "fromTable": "FactPizzaSales",
+        "fromColumn": "order_date",
+        "toTable": "DimDate",
+        "toColumn": "Date"
+      },
+      {
+        "name": "ec8c6f34-bb86-4279-8be0-2d1785359562",
+        "fromTable": "FactPizzaSales",
+        "fromColumn": "pizza_name_id",
+        "toTable": "DimPizza",
+        "toColumn": "pizza_name_id"
+      },
+      {
+        "name": "a8e1cbc8-abcb-445b-90db-d7ba5cd29228",
+        "fromTable": "FactPizzaSales",
+        "fromColumn": "pizza_size",
+        "toTable": "DimSize",
+        "toColumn": "pizza_size"
+      },
+      {
+        "name": "1c6ffb8a-b664-4d64-93b0-d2fdd036bb01",
+        "fromTable": "FactPizzaSales",
+        "fromColumn": "pizza_category",
+        "toTable": "DimCategory",
+        "toColumn": "pizza_category"
+      }
+    ],
+    "expressions": [
+      {
+        "name": "stg_pizza_sales",
+        "kind": "m",
+        "expression": "let\n    Source = Excel.Workbook(File.Contents(\"C:\\Users\\gmtej\\OneDrive\\Desktop\\projects\\Data Analyst Project - SQL+PowerBI+Excel\\pizza_sales_excel_file.xlsx\"), null, true),\n    RawSheet = Source{[Item=\"pizza_sales\",Kind=\"Sheet\"]}[Data],\n    PromotedHeaders = Table.PromoteHeaders(RawSheet, [PromoteAllScalars=true]),\n    // 1. Correct data types (order_time is Time, not DateTime)\n    ChangedTypes = Table.TransformColumnTypes(PromotedHeaders, {{\"pizza_id\", Int64.Type}, {\"order_id\", Int64.Type}, {\"pizza_name_id\", type text}, {\"quantity\", Int64.Type}, {\"order_date\", type date}, {\"order_time\", type time}, {\"unit_price\", type number}, {\"total_price\", type number}, {\"pizza_size\", type text}, {\"pizza_category\", type text}, {\"pizza_ingredients\", type text}, {\"pizza_name\", type text}}),\n    // 2. Trim and clean free-text columns\n    CleanedText = Table.TransformColumns(ChangedTypes, {{\"pizza_name_id\", each Text.Trim(Text.Clean(_)), type text}, {\"pizza_name\", each Text.Trim(Text.Clean(_)), type text}, {\"pizza_ingredients\", each Text.Trim(Text.Clean(_)), type text}}),\n    // 3. Standardise size (upper case) and category (proper case)\n    Standardised = Table.TransformColumns(CleanedText, {{\"pizza_size\", each Text.Upper(Text.Trim(Text.Clean(_))), type text}, {\"pizza_category\", each Text.Proper(Text.Trim(Text.Clean(_))), type text}}),\n    // 4. Remove exact duplicate rows only\n    RemovedDuplicates = Table.Distinct(Standardised)\nin\n    RemovedDuplicates",
+        "lineageTag": "a167fea5-5a4b-4797-adac-ec4f5657839c",
+        "description": "Staging query (load disabled): types, trim/clean, standardise size and category, remove exact duplicates."
+      }
+    ]
+  }
+}
